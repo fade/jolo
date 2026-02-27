@@ -2,13 +2,17 @@
 #+DESCRIPTION: Open tasks for the emacs-container project
 
 * Tasks
+** DONE Switch browser automation default to Playwright CLI
+   Replaced MCP-first guidance with =playwright-cli= sessions (stateful, token-efficient artifacts in =.playwright-cli/=).
+   Added scaffolded =.playwright/cli.config.json= for Alpine system Chromium.
+   Dropped =templates/mcp/playwright.json= and replaced =@playwright/mcp= with =@playwright/cli= in =Containerfile=.
 ** TODO Wayland-aware =just browse= — open Chromium on host display
    Branch: =feat/wayland-browse= (2 commits, reviewed, not merged).
    When =WAYLAND_DISPLAY= is set, opens system Chromium with =--ozone-platform=wayland=.
    Update behavior: stop auto URL copy on =jolo up/create=. =just browse= should
    open Chromium on Wayland; clipboard copy should be explicit/opt-in.
    Falls back to clipboard-only or URL print without Wayland.
-   Also strips =--headless= from Playwright MCP config on Wayland.
+   Also toggles headless behavior appropriately for local browser tooling on Wayland.
 ** TODO Add Phoenix LiveView scaffold support (Elixir)
    Include dev-mode LiveView hot reload and browser live reload defaults.
    Update =Containerfile= to include Elixir/Erlang/Phoenix tooling needed by scaffolded projects.

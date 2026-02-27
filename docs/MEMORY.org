@@ -32,6 +32,7 @@ Tag entries with keywords (e.g., =:auth:perf:musl:=) for searchability.
 - Wayland Chromium: =chromium --ozone-platform=wayland= works from container when socket is mounted; safe (per-surface isolation) :wayland:chromium:
 - =find_git_root()= climbs to ancestor repos — check =target/.git= directly when the target must be a repo root :jolo:delete:
 - =jolo tree= works standalone from any git repo — no =jolo up= on main needed first :jolo:worktree:
+- Browser automation default is =playwright-cli= (stateful, artifact-first); =browser-check= remains for stateless checks :playwright:automation:
 
 * Terminal Image Display                                       :terminal:images:
 
@@ -82,3 +83,4 @@ Conclusion: mostly ceremony for our setup. Details:
 - =templates/.gitignore= has a blanket =public/= ignore (Gatsby) — fixed to =public/*.css= + =public/*.js= instead :jolo:gitignore:
 - Codex =exec= ignores piped stdin diff — it runs =git diff= internally and only sees unstaged changes :codex:review:
 - Gemini misreads =@= in npm package names as leading spaces in diffs :gemini:review:
+- npm package =playwright-cli= is deprecated/no-bin; current package is =@playwright/cli= and needs explicit =executablePath= config to use system Chromium on Alpine :playwright:alpine:
