@@ -34,6 +34,7 @@ Tag entries with keywords (e.g., =:auth:perf:musl:=) for searchability.
 - =jolo tree= works standalone from any git repo — no =jolo up= on main needed first :jolo:worktree:
 - Browser automation default is =playwright-cli= (stateful, artifact-first); =browser-check= remains for stateless checks :playwright:automation:
 - For regressions: force =GOOD_SHA/BAD_SHA= diff + identical probes before root-cause claims; avoid guessing from logs alone :workflow:regression:
+- agent-shell Codex integration requires =@zed-industries/codex-acp= (binary =codex-acp=); =@zed-industries/claude-code-acp= does not satisfy this :agent-shell:acp:codex:
 
 * Terminal Image Display                                       :terminal:images:
 

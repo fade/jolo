@@ -63,3 +63,10 @@
     3. =jolo research "what is an apple"=
     4. Phone: text notification (instant) + audio (seconds later)
     5. Unset =KOKORO_URL=, verify text-only still works
+** DONE Install codex ACP for agent-shell
+   :PROPERTIES:
+   :DATE: 2026-03-01
+   :COMMIT: df766d9
+   :END:
+   Added =@zed-industries/codex-acp= to =Containerfile= global pnpm tools so
+   =codex-acp= is present for =agent-shell=. Rebuild required for runtime use.

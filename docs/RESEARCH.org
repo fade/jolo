@@ -1346,3 +1346,41 @@ expects a local image named =localhost/emacs-gui:latest=.
 - =~/.config/containers/storage.conf=
 - =~/.local/share/containers/storage=
 - =Containerfile= (image build)
+
+* agent-shell missing codex-acp in container           :agent-shell:acp:codex:container:
+:PROPERTIES:
+:DATE: 2026-03-01
+:END:
+
+=agent-shell--start= failed with =Executable "codex-acp" not found=.
+Trying =npm install -g @zed-industries/claude-code-acp= also failed in this
+environment.
+
+** Root cause
+
+The image installed =@openai/codex= but not the ACP adapter package.
+=agent-shell= expects the =codex-acp= executable from
+=@zed-industries/codex-acp=. The claude ACP package exports
+=claude-code-acp=, not =codex-acp=.
+
+** Fix
+
+Added =@zed-industries/codex-acp= to the global pnpm install list in
+=Containerfile=.
+
+** Rebuild and verify
+
+#+begin_src bash
+jolo up --new
+command -v codex-acp
+codex-acp --help
+#+end_src
+
+** Key file
+
+- =Containerfile=
+
+** Refs
+
+- https://github.com/zed-industries/codex-acp
+- https://registry.npmjs.org/@zed-industries/codex-acp
