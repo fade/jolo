@@ -70,3 +70,10 @@
    :END:
    Added =@zed-industries/codex-acp= to =Containerfile= global pnpm tools so
    =codex-acp= is present for =agent-shell=. Rebuild required for runtime use.
+** DONE Diagnose Elpaca bootstrap regression after image update
+   :PROPERTIES:
+   :DATE: 2026-03-01
+   :END:
+   Root cause: ~elpaca-use-package-by-default~ no longer applied; packages were
+   not ensured by default. Fix is ~use-package-always-ensure t~ in the
+   ~elpaca-use-package~ bootstrap block.
