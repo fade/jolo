@@ -1459,3 +1459,50 @@ Added a second commit inside the container after init commands:
 
 ** Key files
 - =_jolo/commands.py= — near line 1302
+
+* agent-shell: debugging stalls and permission prompts    :agent-shell:acp:emacs:
+:PROPERTIES:
+:DATE: 2026-03-24
+:END:
+
+** Logging/traffic inspection
+- =M-x agent-shell-toggle-logging= — enables ACP protocol logging
+- =M-x agent-shell-view-traffic= — raw JSON-RPC messages (requests, responses, permissions)
+- =M-x agent-shell-view-acp-logs= — general protocol logs
+- =shell-maker-logging= variable — lower-level process logging
+- =M-x agent-shell-resume-pending-requests= / =agent-shell-remove-pending-request= — unstick queued requests
+
+** Permission auto-approve
+#+begin_src elisp
+(setq agent-shell-permission-responder-function #'agent-shell-permission-allow-always)
+(setq agent-shell-anthropic-claude-acp-command '("claude-agent-acp" "--dangerously-skip-permissions"))
+#+end_src
+
+** Worktree slash commands silently stall
+=.claude/= is gitignored so worktrees don't get custom slash commands.
+Sending =/afk= (or any custom command) in a worktree causes Claude to go
+silent — no error, no response in ACP traffic after =session/prompt=.
+Fix: symlink =.claude/= from main repo into worktrees.
+
+* xterm-mouse-mode must be called as function              :emacs:terminal:tmux:
+:PROPERTIES:
+:DATE: 2026-03-24
+:END:
+
+=(setq xterm-mouse-mode t)= does nothing — it's a minor mode, not a variable.
+Must use =(xterm-mouse-mode 1)= to actually enable mouse/touch/scroll in terminal Emacs.
+Found in =~/.config/emacs/modules/style.el= line 527.
+
+* container/e script doesn't use emacsclient               :emacs:container:daemon:
+:PROPERTIES:
+:DATE: 2026-03-24
+:END:
+
+The =e= launcher was starting a standalone Emacs (=emacs= / =emacs -nw=) instead of
+connecting to the daemon. Fixed to use =emacsclient --alternate-editor=""= which
+auto-starts the daemon on first call. All subsequent =e= invocations reuse the
+same Emacs process, enabling =emacsclient -e= for eval from agents/shells.
+
+** Key files
+- =container/e= — the launcher script
+- =container/entrypoint.sh= — has =emacs --fg-daemon= behind =START_EMACS=true= (unused by tmuxinator)

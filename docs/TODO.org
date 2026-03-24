@@ -70,6 +70,19 @@
    :END:
    Added =@zed-industries/codex-acp= to =Containerfile= global pnpm tools so
    =codex-acp= is present for =agent-shell=. Rebuild required for runtime use.
+** DONE Fix =container/e= to use emacsclient + daemon
+   :PROPERTIES:
+   :DATE: 2026-03-24
+   :END:
+   Changed =e= to use =emacsclient --alternate-editor=""= which auto-starts daemon.
+   Enables =emacsclient -e= for eval from agent shells (agent-shell, claude-code).
+   Also fixed =xterm-mouse-mode= in style.el (was =setq= instead of function call).
+** TODO Symlink .claude/ into git worktrees
+   Agent-shell worktrees (=agent-shell-new-worktree-shell=) and jolo worktrees
+   don't get =.claude/= since it's gitignored. Without it, custom slash commands
+   (=/afk=, etc.) silently stall. Need to symlink =.claude/= from the main repo
+   into new worktrees. Affects both =_jolo/worktree.py= and the Emacs config
+   template (advice on =agent-shell-new-worktree-shell=).
 ** TODO Get agent-browser working with container Chromium
    [[https://github.com/vercel-labs/agent-browser][agent-browser]] should support custom browser executables via config.
    Latest commits suggest it works, but it doesn't in practice.
