@@ -1420,3 +1420,42 @@ gitleaks and biome pre-commit hooks, but commit =342d345= switched them to local
 - =_jolo/commands.py= — formatting block near line 973
 - =templates/lang/*/= — all language template files
 - =Containerfile= — added =rustfmt= package
+
+* browser-check bugs: double close, exit code, incomplete help  :browser:tooling:
+:PROPERTIES:
+:DATE: 2026-03-24
+:END:
+
+Critical review of =container/browser-check.js= found several issues.
+
+** Fixed
+- Double =browser.close()= — called explicitly then again in =finally=
+- =process.exit(1)= on page JS errors — wrong for an inspection tool, many
+  real pages throw minor errors. Fatal errors still exit 2.
+- =--aria= and =--interactive= flags missing from =--help= output
+
+** Not fixed (noted for later)
+- =--output= shared between =--screenshot= and =--pdf= (conflict if both used)
+- =--snapshot= always appends =...= even for short content
+- Ref system (=e1=, =e2=) useless in stateless tool — dead weight
+- No viewport control (=--width=/=--height=)
+- =getArg= returns =true= for valueless flags, =parseInt(true)= → =NaN=
+
+** Key files
+- =container/browser-check.js=
+
+* jolo create leaves post-init files uncommitted           :jolo:git:scaffold:
+:PROPERTIES:
+:DATE: 2026-03-24
+:END:
+
+=bun init=, =bun add=, =go mod init=, =cargo init= etc. run inside the
+container after the initial commit on the host. Generated files (package.json,
+lock files, go.mod) were left uncommitted.
+
+** Fix
+Added a second commit inside the container after init commands:
+=git add . && git diff --cached --quiet || git commit -m "Add dependencies"=
+
+** Key files
+- =_jolo/commands.py= — near line 1302
