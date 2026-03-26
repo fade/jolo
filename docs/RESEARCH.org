@@ -1608,17 +1608,45 @@ fully decode that format for all keys either (user reported "2%" garbage).
 
 ** Fix
 Install =kkp.el= (kitty keyboard protocol for Emacs). Adds full CSI u
-decoding to =input-decode-map=. In =~/.config/emacs/modules/base.el=:
+decoding to =input-decode-map=. However, =global-kkp-mode= alone is NOT
+enough — kkp probes the terminal with =CSI ? u= and tmux doesn't respond,
+so kkp concludes "not supported" and never registers its decoders.
+
+Must force-enable kkp's keymaps on tty terminals, bypassing the probe.
+In =~/.config/emacs/modules/base.el=:
 
 #+begin_src elisp
 (use-package kkp
   :config
-  (global-kkp-mode +1))
+  (global-kkp-mode +1)
+  ;; tmux doesn't answer the KKP probe but sends CSI u anyway
+  (defun kkp-force-enable-on-tty ()
+    (let ((terminal (kkp--selected-terminal)))
+      (when (and (terminal-live-p terminal)
+                 (not (display-graphic-p terminal))
+                 (not (member terminal kkp--active-terminal-list)))
+        (push terminal kkp--active-terminal-list)
+        (kkp-setup-function-keys terminal)
+        (set-terminal-parameter terminal 'kkp--previous-normal-erase-is-backspace-val
+                                (terminal-parameter terminal 'normal-erase-is-backspace))
+        (normal-erase-is-backspace-mode 1)
+        (dolist (prefix kkp--key-prefixes)
+          (define-key input-decode-map (kkp--csi-escape (string prefix))
+                      (lambda (_prompt) (kkp--process-keys prefix)))))))
+  (add-hook 'tty-setup-hook #'kkp-force-enable-on-tty))
 #+end_src
 
-No tmux changes needed — =csi-u= format stays as default.
+** Why the probe fails
+- kkp sends =CSI ? u CSI [ c= to query KKP support
+- tmux doesn't understand =CSI ? u= (not a full KKP terminal)
+- Response fails kkp's regex match → "KKP not supported"
+- But tmux IS sending CSI u sequences (=extended-keys-format csi-u=)
+- =kkp-status= says "enabled" (mode is on) but decoders never registered
+- Confirmed via: =kkp--active-terminal-list= is nil, =kkp--setup-visited-terminal-list= has the terminal
+- kkp upstream confirms tmux support is out of scope: [[https://github.com/benotn/kkp/issues/12]]
 
 ** Key files
 - =/usr/share/emacs/30.2/lisp/term/tmux.el.gz= — sets =xterm-tmux-extra-capabilities '(modifyOtherKeys)=
 - =/usr/share/emacs/30.2/lisp/term/xterm.el.gz= — =xterm--init-modify-other-keys= sends =\e[>4;1m=
 - =~/.config/emacs/modules/base.el= — where kkp.el goes
+- =~/.cache/emacs/elpaca/sources/kkp/kkp.el= — kkp source, lines 709-733 for the probe logic
