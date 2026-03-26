@@ -1,3 +1,33 @@
+* emacsclient -nw dies instantly on GTK3 daemon build       :emacs:gtk3:terminal:
+:PROPERTIES:
+:DATE: 2026-03-26
+:END:
+
+After switching from emacs-pgtk to gtk3, =emacsclient -nw= opens a terminal
+frame and immediately exits with no visible error.
+
+** Root cause
+=bergheim/disable-pgtk-im= is on =after-make-frame-functions=. It calls
+=pgtk-use-im-context= which is defined in the GTK3 build (function exists)
+but throws "Frames are not in use or not initialized" on terminal frames.
+The =fboundp= guard passes, the call errors, and the error kills the new frame.
+
+Defined in =~/.config/emacs/modules/completion.el:3-7=.
+
+** Fix
+Add =display-graphic-p= guard so it only runs on GUI frames:
+
+#+begin_src elisp
+(defun bergheim/disable-pgtk-im (&rest _args)
+  (when (and (display-graphic-p) (fboundp 'pgtk-use-im-context))
+    (pgtk-use-im-context nil)))
+#+end_src
+
+** Quick workaround (per session)
+#+begin_src sh
+emacsclient -e '(remove-hook (quote after-make-frame-functions) (quote bergheim/disable-pgtk-im))'
+#+end_src
+
 * Mixed-language pre-commit config dropped prose hooks     :precommit:prose:dx:
 :PROPERTIES:
 :DATE: 2026-02-15
