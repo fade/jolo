@@ -91,4 +91,5 @@ Conclusion: mostly ceremony for our setup. Details:
 - Gemini misreads =@= in npm package names as leading spaces in diffs :gemini:review:
 - npm package =playwright-cli= is deprecated/no-bin; current package is =@playwright/cli= and needs explicit =executablePath= config to use system Chromium on Alpine :playwright:alpine:
 - =emacsclient -nw= crash on pgtk was =bergheim/disable-pgtk-im= config bug, not a pgtk issue — container uses =emacs-pgtk-nativecomp= :emacs:pgtk:
-- Tmux 3.6 sends CSI u but doesn't respond to KKP probe — =kkp.el= must be force-enabled via =tty-setup-hook=, not just =global-kkp-mode= :emacs:tmux:keys:
+- Tmux 3.6 sends CSI u but doesn't respond to KKP probe — =kkp.el= must be force-enabled; =tty-setup-hook= alone insufficient in daemon mode (elpaca async loading race) :emacs:tmux:keys:
+- =term-keys= (CyberShadow) uses =\e[27;mod;code~= format, not CSI u — does nothing in tmux; kkp.el is the correct decoder for tmux =extkeys= :emacs:tmux:keys:

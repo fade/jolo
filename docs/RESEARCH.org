@@ -1645,6 +1645,32 @@ In =~/.config/emacs/modules/base.el=:
 - Confirmed via: =kkp--active-terminal-list= is nil, =kkp--setup-visited-terminal-list= has the terminal
 - kkp upstream confirms tmux support is out of scope: [[https://github.com/benotn/kkp/issues/12]]
 
+** Persistence bug: force-enable doesn't survive daemon restart
+:PROPERTIES:
+:DATE: 2026-03-27
+:END:
+
+The =tty-setup-hook= approach only works for terminals created AFTER kkp loads.
+In daemon mode, elpaca loads packages asynchronously. The first =emacsclient -nw=
+may connect (firing =tty-setup-hook=) BEFORE kkp.el is loaded, so
+=kkp-force-enable-on-tty= doesn't exist yet. Then =global-kkp-mode= enables,
+calls =kkp-enable-in-terminal= for the existing terminal, the async probe fails,
+and the terminal is never added to =kkp--active-terminal-list=.
+
+Evidence: =kkp--active-terminal-list= is nil, =kkp--setup-visited-terminal-list=
+has the terminal. =tty-setup-hook= has the function. Manual =(kkp-force-enable-on-tty)=
+call works immediately.
+
+Attempted fix: =advice-add 'kkp--terminal-setup :after #'kkp-force-enable-on-tty=
+to catch probe failure. The callback DOES fire (tmux responds to DA1 =\e[c= but
+not =\e[?u=, so kkp's regex fails). Advice should run our force-enable right after.
+Still not working — needs debug tracing to confirm the advice fires and what
+terminal context it sees.
+
+Also confirmed: =term-keys= (CyberShadow) is loaded but irrelevant — it uses
+=\e[27;mod;code~= format, not CSI u. tmux sends CSI u via =extkeys=. The two
+packages don't conflict but =term-keys= does nothing in tmux.
+
 ** Key files
 - =/usr/share/emacs/30.2/lisp/term/tmux.el.gz= — sets =xterm-tmux-extra-capabilities '(modifyOtherKeys)=
 - =/usr/share/emacs/30.2/lisp/term/xterm.el.gz= — =xterm--init-modify-other-keys= sends =\e[>4;1m=

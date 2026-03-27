@@ -86,12 +86,15 @@
    - Added GNU =grep= package (BusyBox grep lacks =--exclude-dir= for zshrc alias)
    - Discovered OSC 52 =interprogram-cut-function= for Emacs → host clipboard (not yet in config)
 ** TODO Fix =kkp.el= tmux probe failure — force-enable CSI u decoders
-   =global-kkp-mode= is already in config but kkp's KKP capability probe
-   fails through tmux (tmux doesn't respond to =CSI ? u=). Need to add
-   =kkp-force-enable-on-tty= hook to =tty-setup-hook= that bypasses the
-   probe and directly registers =input-decode-map= handlers.
-   Runtime fix confirmed working (Shift+Space decoded correctly).
-   See RESEARCH.org "Shift+Space sends literal u" entry for the full snippet.
+   =tty-setup-hook= + =advice-add :after kkp--terminal-setup= both in host
+   =base.el= but still not working on fresh daemon start. Manual
+   =(kkp-force-enable-on-tty)= call works instantly. Likely cause: elpaca
+   loads kkp async, so =tty-setup-hook= fires before the function exists,
+   and the advice on =kkp--terminal-setup= either doesn't fire or sees
+   wrong terminal context. Next: add debug logging to trace hook/advice
+   execution on daemon restart.
+   =term-keys= package is also loaded but irrelevant (different escape format).
+   See RESEARCH.org "Shift+Space sends literal u" for full analysis.
 ** TODO Add OSC 52 clipboard to Emacs config
    Add =interprogram-cut-function= with OSC 52 to =modules/base.el= inside
    =(use-package emacs)= block, guarded by =(getenv "EMACS_CONTAINER")=.
