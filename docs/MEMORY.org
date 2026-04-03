@@ -44,6 +44,7 @@ Tag entries with keywords (e.g., =:auth:perf:musl:=) for searchability.
 - =jolo up --sync= now syncs AGENTS.md/CLAUDE.md/GEMINI.md if unmodified (hash-tracked in =.template-hashes.json=) :jolo:sync:
 - Each container forwards =WORKTREE_PORTS= (3) extra ports above base for agent-shell worktrees; =replace_port_args()= in =container.py= :jolo:ports:
 - =browser-check= defaults screenshots/PDFs to =scratch/= dir, creates it automatically :browser:automation:
+- =jolo attach= sorts by MRU via =.devcontainer/.last-attach= mtime; touched on every =devcontainer_exec_tmux()= call :jolo:attach:
 
 * Terminal Image Display                                       :terminal:images:
 
