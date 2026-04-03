@@ -1,3 +1,81 @@
+* Spec-driven development (SDD) for AI agents — hype check :sdd:agents:workflow:
+:PROPERTIES:
+:DATE: 2026-04-03
+:PROMPT: OpenSpec / spec-driven development for AI agents - is it actually useful or just hype? Compare to alternatives. Check adoption, evidence, limitations.
+:END:
+
+** Summary
+
+- SDD (write specs before code) is a real movement — 30+ frameworks, 137k+ combined GitHub stars
+- Evidence shows planning-first achieves ~90% first-attempt accuracy vs constant revision cycles
+- OpenSpec specifically has 36.8k stars, 540 commits, v1.2.0 (Feb 2026) — actively maintained
+- However: real experiments show SDD overhead often exceeds benefit for small/medium tasks
+- A dev.to experiment found a simple =Instructions.md= outperformed OpenSpec for a UI redesign — faster, cheaper, easier to iterate
+- The "waterfall comeback" criticism is fair: SDD adds spec maintenance overhead and agents still ignore specs sometimes
+- Consensus: planning before coding helps, but *heavy formal specs* are overkill for most tasks. Lightweight planning (a plan.md or intake questions) captures 80% of the value at 20% of the cost
+
+** Findings
+
+*** What works about SDD
+
+- Separating planning from execution measurably improves AI output
+  ([[https://dev.to/matthewhou/separate-planning-from-execution-the-ai-coding-workflow-that-actually-works-1n00][dev.to — Separate Planning from Execution]])
+- Specs give agents a "contract" — acceptance criteria, scope boundaries, done conditions
+- Controlled studies show ~50% error reduction with human-refined specs
+  ([[https://arxiv.org/abs/2602.00180][arXiv — Spec-Driven Development: From Code to Contract]])
+- AWS cut a 2-week feature to 2 days using Kiro's SDD approach
+
+*** What doesn't work
+
+- Heavy overhead: proposal → spec → design → tasks pipeline costs more than it saves for small changes
+  ([[https://dev.to/incomplete_developer/openspec-spec-driven-development-failed-my-experiment-instructionsmd-was-simpler-and-faster-3a5d][dev.to — OpenSpec Failed My Experiment]])
+- Spec maintenance: now you have two things to keep in sync (spec + code)
+  ([[https://www.alexcloudstar.com/blog/spec-driven-development-2026/][alexcloudstar — SDD 2026: Future or Waterfall?]])
+- Agents still ignore specs sometimes — you review the code regardless
+- Over-specification: developers spend time on edge cases they'd normally handle pragmatically
+
+*** Where the value actually is
+
+The superpowers project ([[https://github.com/obra/superpowers][GitHub]]) gets similar results with lighter tools:
+brainstorming (Socratic design) + plan (bite-sized tasks with exact code) + verification.
+No formal spec artifacts to maintain — the plan is consumed and discarded.
+
+Our existing =feature-workflow= skill (intake questions → branch → TDD → review) captures
+the same "plan before code" benefit without spec overhead. The gap is:
+1. No structured design/brainstorming phase
+2. No verification-before-completion discipline
+3. No systematic debugging methodology
+
+*** OpenSpec repo status
+
+- 36.8k stars, 540 commits, v1.2.0 (Feb 2026), TypeScript
+- Actively maintained with 34 releases
+- Brownfield-focused (delta markers: ADDED/MODIFIED/REMOVED)
+- The =openspec= and =opsx= skills in this repo are custom wrappers, not upstream
+
+** Verdict
+
+SDD is not a fad — planning before coding genuinely helps AI agents. But *formal spec
+frameworks* like OpenSpec are overkill for a single developer working interactively with
+agents. The sweet spot is lightweight planning: a short design discussion, a plan with
+concrete tasks, and verification that it actually works before claiming done.
+
+For this project: remove the unused openspec/opsx skills, keep =feature-workflow=, and add
+the three missing capabilities (brainstorming, verification, systematic debugging) as
+lightweight skills.
+
+** Links
+
+- [[https://github.com/Fission-AI/OpenSpec][OpenSpec — GitHub (36.8k stars)]]
+- [[https://arxiv.org/abs/2602.00180][arXiv — Spec-Driven Development: From Code to Contract]]
+- [[https://dev.to/incomplete_developer/openspec-spec-driven-development-failed-my-experiment-instructionsmd-was-simpler-and-faster-3a5d][dev.to — OpenSpec Failed My Experiment]]
+- [[https://www.alexcloudstar.com/blog/spec-driven-development-2026/][SDD 2026: Future of AI Coding or Waterfall?]]
+- [[https://www.thoughtworks.com/en-us/insights/blog/agile-engineering-practices/spec-driven-development-unpacking-2025-new-engineering-practices][Thoughtworks — Unpacking SDD]]
+- [[https://qubittool.com/blog/spec-coding-complete-guide][QubitTool — Complete Guide to Spec Coding]]
+- [[https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html][Martin Fowler — Understanding SDD: Kiro, spec-kit, and Tessl]]
+- [[https://github.com/obra/superpowers][Superpowers — GitHub]]
+- [[https://addyosmani.com/blog/ai-coding-workflow/][Addy Osmani — My LLM Coding Workflow]]
+
 * Bun SO_REUSEPORT silently steals ports                :bun:elysia:typescript:
 :PROPERTIES:
 :DATE: 2026-04-01
