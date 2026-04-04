@@ -114,6 +114,17 @@
    =agent-shell-search-history= → =shell-maker-search-history=,
    =agent-shell-rename-buffer= → =shell-maker-rename-buffer=,
    =agent-shell-insert-file= / =agent-shell-send-current-file= → =agent-shell-send-file=.
+** TODO Delete openspec skills and =openspec/= directory
+   11 unused =openspec-*= skills pollute the skill list. User hasn't used them in months.
+   Also remove =openspec/= top-level directory (stale change artifacts).
+** TODO Verify NOTIFY_PATH env inheritance in automated hooks
+   =export NOTIFY_PATH=/foo= in agent shell may or may not be inherited by
+   Claude Code's hook subprocess. If not, update hook commands to pass
+   =--path "$NOTIFY_PATH"= explicitly. Threshold was temporarily set to 1s
+   for testing — reset to 20s after verification.
+** TODO Add ollama integration (OLLAMA_HOST=http://berghome:11434)
+   Ollama runs on berghome with qwen3.5:27b-32k. Pass =OLLAMA_HOST= env
+   to containers. Broader integration scope (gptel, agent window) TBD.
 ** TODO Get agent-browser working with container Chromium
    [[https://github.com/vercel-labs/agent-browser][agent-browser]] should support custom browser executables via config.
    Latest commits suggest it works, but it doesn't in practice.
